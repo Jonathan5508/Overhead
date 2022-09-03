@@ -4,15 +4,17 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-token = os.getenv('TOKEN')
-mongostr = os.getenv('MONGO_STRING')
-client = motor.motor_asyncio.AsyncIOMotorClient(mongostr)
+
+client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGOSTRING"])
 
 maindb = client.overhead
 coll = maindb["applications"]
 apdcoll = maindb["appdata"]
 vcoll = maindb["verify"]
 apucoll = maindb["appusers"]
+vdcoll = maindb["vdata"]
+vmcoll = maindb["verifymodal"]
+vucoll = maindb["vusers"]
 
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents, help_command=None)
@@ -34,4 +36,4 @@ async def on_ready():
 async def ping(ctx):
     await ctx.respond(f"Pong! {round(bot.latency) * 1000}")
 
-bot.run(token)
+bot.run(os.environ["TOKEN"])

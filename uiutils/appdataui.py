@@ -1,7 +1,7 @@
 import discord
 from discord.ui import View
 from main import apdcoll, apucoll
-from ticketui import TicketView
+from uiutils import ticketui
 
 class AppDataView(View): #class for viewing application data
     def __init__(self):
@@ -28,7 +28,7 @@ class AppDataView(View): #class for viewing application data
         username = userobj.name
         data = apucoll.find({"_id": interaction.guild_id})
         async for users in data:
-            user = interaction.guild.get_member(users["user"])
+            user = interaction.guild.get_member(users[username])
 
         await user.send("Your Application has been denied. For more information, you may open a ticket if Overhead's ticket system is set up in the server.")
         await apucoll.update_one({"_id": interaction.guild_id}, {"$unset": {username: userid}})
@@ -65,4 +65,4 @@ class AppDataView(View): #class for viewing application data
         }
         channel = await interaction.guild.create_text_channel(name=f"ticket {interaction.user}", category=category, overwrites=overwrites)
         embed = discord.Embed(title=f"ticket {interaction.user}", description="Staff has opened a ticket for further discussion of your application.")
-        await channel.send(embed=embed, view=TicketView())
+        await channel.send(embed=embed, view=ticketui.TicketView())

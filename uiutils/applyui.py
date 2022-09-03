@@ -1,7 +1,7 @@
 import discord
 from discord.ui import View, Modal, InputText
 from main import apdcoll, apucoll, coll
-from appdataui import AppDataView
+from uiutils import appdataui
 
 class ApplyView(View): #class for applying
     def __init__(self):
@@ -37,7 +37,7 @@ class ApplyView(View): #class for applying
                 apucoll.update_one({"_id": interaction.guild_id}, {"$set": {interaction.user.name: interaction.user.id}}, upsert=True)
                 embed = discord.Embed(title="App Results", description=descstr)
                 embed.set_footer(text=interaction.user.id)
-                await channel.send(embed=embed, view=AppDataView())
+                await channel.send(embed=embed, view=appdataui.AppDataView())
                 await interaction.response.send_message("App sent!", ephemeral=True)
             except KeyError:
                 await interaction.response.send_message("The mod apps have not completed setup!")
