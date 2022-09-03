@@ -18,10 +18,6 @@ class Help(commands.Cog):
             value="`ticketsetup`\n`addrole`\n`removerole`\n`openticket`"
         )
         embed.add_field(
-            name="wordverify",
-            value="`setpassword`"
-        )
-        embed.add_field(
             name="misc",
             value="`ping`"
         )
