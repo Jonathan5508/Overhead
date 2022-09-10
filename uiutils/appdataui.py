@@ -12,8 +12,7 @@ class AppDataView(View): #class for viewing application data
         userobj = interaction.guild.get_member(int(interaction.message.embeds[0].footer.text))
         username = userobj.name
         data2 = apdcoll.find({"_id": interaction.guild_id})
-        async for roles in data2:
-            role = interaction.guild.get_role(roles["modroleid"])
+        role = interaction.guild.get_role(data2["modroleid"])
         await userobj.add_roles(role)
 
         await userobj.send("Your Application has been accepted!")
@@ -26,9 +25,8 @@ class AppDataView(View): #class for viewing application data
         userid = int(interaction.message.embeds[0].footer.text)
         userobj = interaction.guild.get_member(int(interaction.message.embeds[0].footer.text))
         username = userobj.name
-        data = apucoll.find({"_id": interaction.guild_id})
-        async for users in data:
-            user = interaction.guild.get_member(users[username])
+        data = await apucoll.find_one({"_id": interaction.guild_id})
+        user = interaction.guild.get_member(data[username])
 
         await user.send("Your Application has been denied. For more information, you may open a ticket if Overhead's ticket system is set up in the server.")
         await apucoll.update_one({"_id": interaction.guild_id}, {"$unset": {username: userid}})
@@ -39,9 +37,8 @@ class AppDataView(View): #class for viewing application data
         userid = int(interaction.message.embeds[0].footer.text)
         userobj = interaction.guild.get_member(int(interaction.message.embeds[0].footer.text))
         username = userobj.name
-        data = apucoll.find({"_id": interaction.guild_id})
-        async for users in data:
-            user = interaction.guild.get_member(users[interaction.user.name])
+        data = await apucoll.find_one({"_id": interaction.guild_id})
+        user = interaction.guild.get_member(data[interaction.user.name])
 
         await user.send("Staff has opened a ticket for further discussion of your application.")
 

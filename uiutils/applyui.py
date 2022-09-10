@@ -8,33 +8,31 @@ class ApplyView(View): #class for applying
         super().__init__(timeout=None)
     @discord.ui.button(label="Apply", custom_id="apply-button", style=discord.ButtonStyle.green)
     async def btn_callback(self, button, interaction: discord.Interaction):
-        data = coll.find({"_id": interaction.guild_id})
+        data = await coll.find_one({"_id": interaction.guild_id})
         modal = Modal(title="Mod App")
-        async for field in data:
-            for keys in field.keys():
-                if keys == "_id":
-                    continue
-                if keys == "Field 1":
-                    modal.add_item(InputText(label=field[keys]))
-                    continue
-                modal.add_item(InputText(label=field[keys], style=discord.InputTextStyle.long))
+        data.pop("_id")
+        for key in data:
+            val = data[key]
+            if key == "Field 1":
+                modal.add_item(InputText(label=val))
+                continue
+            modal.add_item(InputText(label=val, style=discord.InputTextStyle.long))
 
         async def modal_callback(interaction: discord.Interaction):
             try:
                 descstr = ""
-                data = apdcoll.find({"_id": interaction.guild_id})
-                fielddata = coll.find({"_id": interaction.guild_id})
+                data = await apdcoll.find_one({"_id": interaction.guild_id})
+                fielddata = await coll.find_one({"_id": interaction.guild_id})
                 i = 0
-                async for fields in fielddata:
-                    for keys in fields.keys():
-                        if keys == "_id":
-                            continue
-                        q = fields[keys]
-                        descstr += f"**{q}**\n{modal.children[i].value}\n\n"
-                        i += 1
-                async for ids in data:
-                    channel = interaction.guild.get_channel(ids['channelid'])
-                apucoll.update_one({"_id": interaction.guild_id}, {"$set": {interaction.user.name: interaction.user.id}}, upsert=True)
+                for fields in fielddata:
+                    val = fielddata[fields]
+                    if fields == "_id":
+                        continue
+                    descstr += f"**{val}**\n{modal.children[i].value}\n\n"
+                    i += 1
+
+                channel = interaction.guild.get_channel(data['channelid'])
+                await apucoll.update_one({"_id": interaction.guild_id}, {"$set": {interaction.user.name: interaction.user.id}}, upsert=True)
                 embed = discord.Embed(title="App Results", description=descstr)
                 embed.set_footer(text=interaction.user.id)
                 await channel.send(embed=embed, view=appdataui.AppDataView())

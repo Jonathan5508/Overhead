@@ -14,9 +14,9 @@ class TicketSetupView(View): #class for opening tickets
             if username and tag in chn.name:
                 return await interaction.response.send_message("You already have an open ticket!", ephemeral=True)
         await interaction.response.defer(ephemeral=True)
-        data = apdcoll.find({"_id": interaction.guild_id})
-        async for ids in data:
-            category = interaction.guild.get_channel(ids["ticketCat"])
+        data = await apdcoll.find_one({"_id": interaction.guild_id})
+
+        category = interaction.guild.get_channel(data["ticketCat"])
         channel = await interaction.guild.create_text_channel(name=f"ticket {interaction.user}", category=category)
         perms = channel.overwrites_for(interaction.user)
         perms.view_channel=True

@@ -28,10 +28,9 @@ class TicketView(View): #class for managing opened tickets
 
     async def close_reason(self, button, interaction: discord.Interaction):
 
-        data = apdcoll.find({"_id": interaction.guild_id})
-        async for ids in data:
-            channel = interaction.guild.get_channel(ids["ticketLogs"])
-            category = interaction.guild.get_channel(ids["ticketCat"])
+        data = await apdcoll.find_one({"_id": interaction.guild_id})
+        channel = interaction.guild.get_channel(data["ticketLogs"])
+        category = interaction.guild.get_channel(data["ticketCat"])
         for role in interaction.user.roles:
             perms = category.overwrites_for(role)
             if perms.view_channel or interaction.user is interaction.guild.owner:

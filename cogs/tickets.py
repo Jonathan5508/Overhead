@@ -44,9 +44,9 @@ class tickets(commands.Cog):
     @ticketcmd.command(name="addrole", description="Adds a role to ticket handlers.")
     @commands.has_permissions(administrator=True)
     async def add_ticket_role(self, ctx, role:discord.Role):
-        data = apdcoll.find({"_id": ctx.guild.id})
-        async for channels in data:
-            channel = ctx.guild.get_channel(channels["ticketCat"])
+        data = await apdcoll.find_one({"_id": ctx.guild.id})
+
+        channel = ctx.guild.get_channel(data["ticketCat"])
         perms = ctx.channel.overwrites_for(role)
         perms.view_channel=True
         await channel.set_permissions(role, overwrite=perms)
@@ -54,9 +54,9 @@ class tickets(commands.Cog):
 
     @ticketcmd.command(name="removerole", description="Removes a role from ticket handlers.")
     async def remove_ticket_role(self, ctx, role:discord.Role):
-        data = apdcoll.find({"_id": ctx.guild.id})
-        async for channels in data:
-            channel = ctx.guild.get_channel(channels["ticketCat"])
+        data = await apdcoll.find_one({"_id": ctx.guild.id})
+
+        channel = ctx.guild.get_channel(data["ticketCat"])
         perms = ctx.channel.overwrites_for(role)
         perms.view_channel=False
         await channel.set_permissions(role, overwrite=perms)
@@ -64,7 +64,7 @@ class tickets(commands.Cog):
 
     @ticketcmd.command(name="openticket", description="opens a ticket with a certain user.")
     async def open_ticket(self, ctx, member:discord.Member):
-        data = apdcoll.find({"_id": ctx.guild.id})
+        data = await apdcoll.find({"_id": ctx.guild.id})
         async for ids in data:
             try:
                 category = ctx.guild.get_channel(ids["ticketCat"])

@@ -10,9 +10,8 @@ class VDataView(View): #class for viewing application data
         userid = int(interaction.message.embeds[0].footer.text)
         userobj = interaction.guild.get_member(int(interaction.message.embeds[0].footer.text))
         username = userobj.name
-        data2 = vdcoll.find({"_id": interaction.guild_id})
-        async for roles in data2:
-            role = interaction.guild.get_role(roles["verifyroleid"])
+        data2 = await vdcoll.find_one({"_id": interaction.guild_id})
+        role = interaction.guild.get_role(data2["verifyroleid"])
         await userobj.add_roles(role)
 
         await userobj.send("You have been verified, welcome!")
