@@ -15,7 +15,7 @@ class TicketView(View): #class for managing opened tickets
             category = interaction.guild.get_channel(ids["ticketCat"])
         for role in interaction.user.roles:
             perms = category.overwrites_for(role)
-            if perms.view_channel or interaction.user is interaction.guild.owner:
+            if perms.view_channel is True or interaction.user is interaction.guild.owner:
                 await interaction.response.send_message("This channel will be deleted shortly.", ephemeral=True)
                 embed = discord.Embed(title=f"Log Summary for {interaction.user}'s ticket.", description="see below")
                 await channel.send(embed=embed)
