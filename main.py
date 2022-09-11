@@ -38,4 +38,4 @@ async def on_ready():
 async def ping(ctx):
     await ctx.respond(f"Pong! {round(bot.latency) * 1000}")
 
-bot.run(os.environ["TOKEN"])
+bot.run(os.getenv("TOKEN"))
