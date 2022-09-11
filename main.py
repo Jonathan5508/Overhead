@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGOSTRING"])
+client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGOSTRING"))
 
 maindb = client.overhead
 coll = maindb["applications"]
