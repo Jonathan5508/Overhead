@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from main import coll, apdcoll, vcoll, apucoll
+from main import coll, apdcoll, vcoll, apucoll, vdcoll, vmcoll, vucoll
 
 class joinleave(commands.Cog):
     def __init__(self, bot):
@@ -20,11 +20,10 @@ class joinleave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild:discord.Guild):
+        ls = [apdcoll, vcoll, apucoll, vdcoll, vmcoll, vucoll, coll]
         gid = {"_id": guild.id}
-        await coll.delete_one(gid)
-        await apdcoll.delete_one(gid)
-        await vcoll.delete_one(gid)
-        await apucoll.delete_one(gid)     
+        for colls in ls:
+            await colls.delete_one(gid)  
 
 def setup(bot):
     bot.add_cog(joinleave(bot))

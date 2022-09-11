@@ -16,8 +16,9 @@ vdcoll = maindb["vdata"]
 vmcoll = maindb["verifymodal"]
 vucoll = maindb["vusers"]
 
-intents = discord.Intents
+intents = discord.Intents.default()
 intents.members = True
+
 bot = discord.Bot(intents=intents, help_command=None)
 
 for files in os.listdir("./cogs"):
